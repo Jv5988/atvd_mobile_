@@ -1,0 +1,147 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapsActivity">
+
+    <!-- Fragmento do Mapa -->
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Layout para Cronômetro, Distância e Velocidade -->
+    <LinearLayout
+        android:id="@+id/statsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical"
+        android:background="@android:color/darker_gray"
+        android:padding="8dp"
+        android:layout_margin="16dp">
+
+        <!-- Exibição de Tempo -->
+        <TextView
+            android:id="@+id/timeTextView"
+            android:text="Tempo: 00:00:00"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white" />
+
+        <!-- Exibição de Velocidade -->
+        <TextView
+            android:id="@+id/speedTextView"
+            android:text="Velocidade: 0 km/h"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="8dp" />
+
+        <!-- Exibição de Distância -->
+        <TextView
+            android:id="@+id/distanceTextView"
+            android:text="Distância: 0 m"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="8dp" />
+
+        <!-- Registrar Trilha -->
+
+        <TextView
+            android:id="@+id/trailSummaryTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"/>
+
+        <Button
+            android:id="@+id/viewTrailButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Visualizar Trilha"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+    <!-- Botão Iniciar -->
+    <Button
+        android:id="@+id/startButton"
+        android:text="Iniciar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"/>
+
+    <!-- Botão Parar -->
+    <Button
+        android:id="@+id/stopButton"
+        android:text="Parar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"/>
+
+    <!-- Seção de Configuração do Mapa -->
+    <RadioGroup
+        android:id="@+id/mapTypeGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp">
+
+        <RadioButton
+            android:id="@+id/vectorMap"
+            android:text="Mapa Vetorial"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:buttonTint="#000000"/>
+        <RadioButton
+            android:id="@+id/satelliteMap"
+            android:text="Mapa Satélite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:buttonTint="#000000"/>
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/navigationModeGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mapTypeGroup"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp">
+
+        <RadioButton
+            android:id="@+id/northUp"
+            android:text="North Up"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:buttonTint="#000000"/>
+        <RadioButton
+            android:id="@+id/courseUp"
+            android:text="Course Up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:buttonTint="#000000"/>
+    </RadioGroup>
+
+</RelativeLayout>

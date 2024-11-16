@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="map" type="id" />
+    <item name="mapTypeGroup" type="id" />
+    <item name="vectorMap" type="id" />
+    <item name="satelliteMap" type="id" />
+    <item name="navigationModeGroup" type="id" />
+    <item name="northUp" type="id" />
+    <item name="courseUp" type="id" />
+    <item name="speedTextView" type="id" />
+    <item name="timeTextView" type="id" />
+    <item name="distanceTextView" type="id" />
+    <item name="statsLayout" type="id" />
+    <item name="startButton" type="id" />
+    <item name="stopButton" type="id" />
+</resources>
