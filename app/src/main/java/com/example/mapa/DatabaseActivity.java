@@ -10,7 +10,6 @@ public class DatabaseActivity extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "TrilhaDB";
     private static final int DATABASE_VERSION = 1;
 
-    // Nome da tabela e colunas
     private static final String TABLE_TRILHA = "Trilha";
     private static final String COLUMN_ID = "Id";
     static final String COLUMN_LATITUDE = "Latitude";
@@ -47,7 +46,7 @@ public class DatabaseActivity extends SQLiteOpenHelper {
         values.put(COLUMN_LONGITUDE, longitude);
 
         db.insert(TABLE_TRILHA, null, values);
-        db.close(); // Fechar a conexão com o banco de dados
+        db.close();
     }
 
     // Método para obter todas as posições registradas
@@ -59,7 +58,7 @@ public class DatabaseActivity extends SQLiteOpenHelper {
 
     public void clearAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_TRILHA, null, null); // Apaga todas as linhas
-        db.close(); // Fechar a conexão com o banco de dados
+        db.delete(TABLE_TRILHA, null, null);
+        db.close();
     }
 }

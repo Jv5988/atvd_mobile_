@@ -40,16 +40,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private GoogleMap mMap;
-    private int mapType = GoogleMap.MAP_TYPE_NORMAL; // Padrão: Mapa Vetorial
-    private boolean isNorthUp = true; // Padrão: North Up
+    private int mapType = GoogleMap.MAP_TYPE_NORMAL;
+    private boolean isNorthUp = true;
     private ActivityMapsBinding binding;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;
-    private DatabaseActivity databaseActivity; // Instância para salvar no banco
+    private DatabaseActivity databaseActivity;
 
     private LatLng previousLocation;
-    private double totalDistance = 0.0; // Distância total percorrida
+    private double totalDistance = 0.0;
     private long startTime;
     private boolean isTracking = false;
 
@@ -64,7 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (isTracking) {
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 updateTimerDisplay(elapsedTime);
-                timerHandler.postDelayed(this, 1000);  // Atualiza a cada segundo
+                timerHandler.postDelayed(this, 1000);
             }
         }
     };
@@ -74,10 +74,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
 
         Context context = getApplicationContext();
-        File dbFile = context.getDatabasePath("TrilhaDB");  // Nome do seu banco de dados
+        File dbFile = context.getDatabasePath("TrilhaDB");
         String dbPath = dbFile.getAbsolutePath();
 
-        // Exibir o caminho no Logcat
         Log.d("Database Path", dbPath);
 
         super.onCreate(savedInstanceState);
@@ -86,16 +85,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         setupMapAndNavigationOptions();
 
-        // Inicializar o banco de dados
         databaseActivity = new DatabaseActivity(this);
 
-        // Inicializar o FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Configurar as atualizações de localização
         setupLocationUpdates();
 
-        // Configurar os botões de Iniciar e Parar
         Button startButton = findViewById(R.id.startButton);
         Button stopButton = findViewById(R.id.stopButton);
 
@@ -139,8 +134,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Processar as atualizações
     private void setupLocationUpdates() {
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(5000); // Atualiza a cada 5 segundos
-        locationRequest.setFastestInterval(2000); // Intervalo mais rápido para atualizações
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         locationCallback = new LocationCallback() {
@@ -155,35 +150,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (isTracking) {
                     LatLng currentLocation = new LatLng(locationResult.getLastLocation().getLatitude(),
                             locationResult.getLastLocation().getLongitude());
-
-                    // Verifica a distância desde a última posição
+                    
                     if (previousLocation == null || calculateDistance(previousLocation, currentLocation) >= MIN_DISTANCE_UPDATE) {
-                        // Salvar a posição no banco de dados
                         saveLocationToDatabase(currentLocation);
 
-                        // Atualizar o mapa com a nova posição
                         MarkerOptions markerOptions = new MarkerOptions().position(currentLocation).title("Você está aqui");
-                        mMap.clear(); // Limpa os marcadores anteriores para evitar sobreposição
+                        mMap.clear();
                         mMap.addMarker(markerOptions);
 
-                        // Atualizar a distância percorrida
                         if (previousLocation != null) {
                             totalDistance += calculateDistance(previousLocation, currentLocation);
                         }
                         previousLocation = currentLocation;
 
-                        // Atualiza a distância
                         updateDistanceDisplay();
 
-                        // Atualizar a velocidade
-                        float speed = locationResult.getLastLocation().getSpeed(); // velocidade em metros por segundo
+                        float speed = locationResult.getLastLocation().getSpeed();
                         updateSpeedDisplay(speed);
 
-                        // Atualizar o cronômetro
                         long elapsedTime = System.currentTimeMillis() - startTime;
                         updateTimerDisplay(elapsedTime);
 
-                        // Atualizar o mapa com a nova posição
                         float zoom = mMap.getCameraPosition().zoom;
                         float bearing = isNorthUp ? 0 : locationResult.getLastLocation().getBearing();
 
@@ -207,9 +194,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
             startTime = System.currentTimeMillis();
             isTracking = true;
-            previousLocation = null;  // Reinicia a localização anterior para calcular a distância corretamente
-            totalDistance = 0.0;  // Reinicia a distância
-            timerHandler.post(updateTimerRunnable);  // Começa a atualizar o cronômetro
+            previousLocation = null;
+            totalDistance = 0.0;
+            timerHandler.post(updateTimerRunnable);
             TextView trailSummaryTextView = findViewById(R.id.trailSummaryTextView);
             trailSummaryTextView.setText("");
             databaseActivity.clearAllData();
@@ -225,29 +212,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Ações do botão Parar
     private void stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback);
-        isTracking = false;  // Impede a atualização de dados
-        timerHandler.removeCallbacks(updateTimerRunnable);  // Para de atualizar o cronômetro
+        isTracking = false;
+        timerHandler.removeCallbacks(updateTimerRunnable);
         Toast.makeText(this, "Captura de localização interrompida", Toast.LENGTH_SHORT).show();
 
-        // Calcular a duração da trilha
         long elapsedTime = System.currentTimeMillis() - startTime;
 
-        // Calcular a velocidade média
-        double averageSpeed = totalDistance / (elapsedTime / 1000.0);  // Velocidade média em metros por segundo
-        double averageSpeedKmH = averageSpeed * 3.6; // Convertendo para km/h
+        double averageSpeed = totalDistance / (elapsedTime / 1000.0);
+        double averageSpeedKmH = averageSpeed * 3.6;
 
-        // Calcular o tempo de duração em horas, minutos e segundos
         long seconds = (elapsedTime / 1000) % 60;
         long minutes = (elapsedTime / (1000 * 60)) % 60;
         long hours = (elapsedTime / (1000 * 60 * 60)) % 24;
 
         String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
-        // Formatando a data/hora de início
         String startTimeFormatted = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
                 .format(new java.util.Date(startTime));
 
-        // Exibir os dados na tela
         String summary = "Início: " + startTimeFormatted + "\n" +
                 "Duração: " + time + "\n" +
                 "Distância: " + new DecimalFormat("0.0").format(totalDistance) + " m\n" +
@@ -259,18 +241,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
     //Salva a posição do usuário no banco de dados
     private void saveLocationToDatabase(LatLng location) {
         Log.d("Location", "Latitude: " + location.latitude + ", Longitude: " + location.longitude);
-        // Salvar a posição no banco de dados
         databaseActivity.addLocation(location.latitude, location.longitude);
         Toast.makeText(this, "Localização salva no banco de dados", Toast.LENGTH_SHORT).show();
     }
 
     //Calcula a distância do percurso
     private double calculateDistance(LatLng start, LatLng end) {
-        double earthRadius = 6371000; // Raio da Terra em metros
+        double earthRadius = 6371000;
         double lat1 = Math.toRadians(start.latitude);
         double lon1 = Math.toRadians(start.longitude);
         double lat2 = Math.toRadians(end.latitude);
@@ -284,13 +264,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Math.sin(dlon / 2) * Math.sin(dlon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return earthRadius * c; // Retorna a distância em metros
+        return earthRadius * c;
     }
 
     //Atualiza a Velocidade
     private void updateSpeedDisplay(float speed) {
         DecimalFormat df = new DecimalFormat("0.0");
-        String speedText = df.format(speed * 3.6) + " km/h"; // Convertendo de m/s para km/h
+        String speedText = df.format(speed * 3.6) + " km/h";
         speedTextView.setText("Velocidade: " + speedText);
     }
 
@@ -307,7 +287,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Atualiza a distância
     private void updateDistanceDisplay() {
         DecimalFormat df = new DecimalFormat("0.0");
-        String distanceText = df.format(totalDistance) + " m"; // Distância em metros
+        String distanceText = df.format(totalDistance) + " m";
         distanceTextView.setText("Distância: " + distanceText);
     }
 
@@ -320,22 +300,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
 
-            // Habilita a localização no mapa
             mMap.setMyLocationEnabled(true);
 
-            // Obtém a última localização conhecida
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
                             if (location != null) {
-                                // Cria um LatLng com as coordenadas do usuário
                                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
-                                // Move a câmera para a localização do usuário
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 3));
 
-                                // Caso queira colocar um marcador
                                 mMap.addMarker(new MarkerOptions().position(userLocation).title("Você está aqui"));
                             }
                         }

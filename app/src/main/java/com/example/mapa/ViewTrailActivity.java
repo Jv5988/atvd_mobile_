@@ -26,16 +26,12 @@ public class ViewTrailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_trail);
 
-        // Inicialize o banco de dados
         databaseActivity = new DatabaseActivity(this);
 
-        // Referencie o ListView onde as posições serão exibidas
         locationsListView = findViewById(R.id.locationsListView);
 
-        // Obtenha as localizações do banco de dados
         locationList = getLocationsFromDatabase();
 
-        // Crie um adaptador para exibir as localizações
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, locationList);
         locationsListView.setAdapter(adapter);
     }
@@ -45,13 +41,10 @@ public class ViewTrailActivity extends AppCompatActivity {
         List<String> locations = new ArrayList<>();
         Cursor cursor = databaseActivity.getAllLocations();
 
-        // Verifica se o cursor contém dados e se as colunas existem
         if (cursor != null && cursor.moveToFirst()) {
-            // Verifique os índices das colunas
             int latitudeIndex = cursor.getColumnIndex(COLUMN_LATITUDE);
             int longitudeIndex = cursor.getColumnIndex(COLUMN_LONGITUDE);
 
-            // Verifique se as colunas existem (índice ≥ 0)
             if (latitudeIndex != -1 && longitudeIndex != -1) {
                 do {
                     double latitude = cursor.getDouble(latitudeIndex);
